@@ -186,6 +186,59 @@ def countries():
     )
 
 
+# ---------------------------------------------------------------------------
+# Vercel fallback routes: in case requests reach Flask with /api/index prefix
+# ---------------------------------------------------------------------------
+@app.route("/api/index")
+@app.route("/api/index/")
+@app.route("/api")
+@app.route("/api/")
+def vercel_root():
+    return dashboard()
+
+
+@app.route("/api/index/static/<path:filename>")
+@app.route("/api/static/<path:filename>")
+def vercel_static(filename):
+    return app.send_static_file(filename)
+
+
+@app.route("/api/index/customers")
+@app.route("/api/customers")
+def vercel_customers():
+    return customers()
+
+
+@app.route("/api/index/customers/<cid>")
+@app.route("/api/customers/<cid>")
+def vercel_customer_detail(cid):
+    return customer_detail(cid)
+
+
+@app.route("/api/index/products")
+@app.route("/api/products")
+def vercel_products():
+    return products()
+
+
+@app.route("/api/index/products/<code>")
+@app.route("/api/products/<code>")
+def vercel_product_detail(code):
+    return product_detail(code)
+
+
+@app.route("/api/index/transactions")
+@app.route("/api/transactions")
+def vercel_transactions():
+    return transactions()
+
+
+@app.route("/api/index/countries")
+@app.route("/api/countries")
+def vercel_countries():
+    return countries()
+
+
 @app.errorhandler(404)
 def not_found(_):
     return render_template("404.html"), 404
