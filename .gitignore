@@ -10,9 +10,6 @@ __pycache__/
 *$py.class
 *.pkl
 
-# Vercel
-.vercel/
-
 # Excel raw archive (CSV is used in production)
 data/online_retail.xlsx
 

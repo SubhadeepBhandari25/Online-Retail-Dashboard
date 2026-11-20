@@ -31,11 +31,10 @@ Powered by the **UCI Machine Learning Online Retail Dataset** (~540,000 transact
 * **Backend**: Python 3.11, Flask
 * **Frontend**: HTML5, Semantic CSS, Jinja2 Templates
 * **Data Processing**: Standard Python Data Structures (`namedtuples`, `sets`, `dicts`, `lists`) for fast, memory-efficient in-memory analytics.
-* **Deployment**: Vercel Serverless (`@vercel/python`)
 
 ---
 
-## 🚀 Local Development Setup
+## 🚀 Run the Project Locally
 
 1. **Clone the repository**:
    ```bash
@@ -64,13 +63,3 @@ Powered by the **UCI Machine Learning Online Retail Dataset** (~540,000 transact
 
 5. **Open in browser**:
    Navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000).
-
----
-
-## ☁️ Deployment on Vercel
-
-This repository is pre-configured with `vercel.json` and `api/index.py` for one-click deployment on Vercel:
-
-1. Import this repository into [Vercel](https://vercel.com/new).
-2. Framework Preset: **Other**.
-3. Click **Deploy**.
