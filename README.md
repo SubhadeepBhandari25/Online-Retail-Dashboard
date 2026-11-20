@@ -63,3 +63,18 @@ Powered by the **UCI Machine Learning Online Retail Dataset** (~540,000 transact
 
 5. **Open in browser**:
    Navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
+---
+
+## ☁️ Deployment on Render.com
+
+This repository is ready for one-click deployment on Render:
+
+1. Sign in to [Render.com](https://render.com) with GitHub.
+2. Click **New +** → **Web Service**.
+3. Connect your repository: `SubhadeepBhandari25/Online-Retail-Dashboard`.
+4. Render will auto-detect the configuration from `render.yaml` and `Procfile`:
+   * **Runtime**: Python 3
+   * **Build Command**: `pip install -r requirements.txt`
+   * **Start Command**: `gunicorn --workers 1 --threads 4 --timeout 120 app:app`
+5. Select the **Free** instance type and click **Deploy Web Service**.
