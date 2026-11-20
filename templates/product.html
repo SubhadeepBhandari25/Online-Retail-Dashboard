@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ d.row.description|title }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{{ url_for('products') }}">Products</a></p>
+<h1>{{ d.row.description|title }}</h1>
+<p class="lede">Product code {{ d.row.code }}</p>
+
+<section class="kpis">
+  <div class="kpi"><span class="v">{{ d.row.frequency }}</span><span class="l">Orders containing it</span></div>
+  <div class="kpi"><span class="v">{{ d.row.quantity|num }}</span><span class="l">Units sold</span></div>
+  <div class="kpi"><span class="v">{{ d.row.buyers }}</span><span class="l">Different buyers</span></div>
+  <div class="kpi"><span class="v">{{ d.row.revenue|money }}</span><span class="l">Revenue</span></div>
+</section>
+
+<div class="two">
+  <section class="panel">
+    <div class="panel-head"><h2>Sold in</h2>{{ tag('set -> sorted list') }}</div>
+    <p>{{ d.countries|join(', ') }}</p>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Buyers</h2>{{ tag('set') }}</div>
+    <p class="chips">{% for c in d.buyers[:40] %}<a href="{{ url_for('customer_detail', cid=c) }}">{{ c }}</a>{% endfor %}{% if d.buyers|length > 40 %} <span class="muted">and {{ d.buyers|length - 40 }} more</span>{% endif %}</p>
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-head"><h2>Latest 25 transactions</h2>{{ tag('list of tuples') }}</div>
+  <table>
+    <thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Country</th><th class="n">Qty</th><th class="n">Unit price</th></tr></thead>
+    <tbody>
+    {% for t in d.recent %}
+      <tr><td>{{ t.invoice }}</td><td>{{ t.date.strftime('%d %b %Y') }}</td><td><a href="{{ url_for('customer_detail', cid=t.customer_id) }}">{{ t.customer_id }}</a></td><td>{{ t.country }}</td><td class="n">{{ t.quantity }}</td><td class="n">{{ t.unit_price|money }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

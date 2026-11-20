@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Customer and product overview</h1>
+<p class="lede">Every number below is calculated from Python lists, tuples, sets and dictionaries. The small label on each panel names the structure behind it.</p>
+
+<section class="kpis">
+  <div class="kpi"><span class="v">{{ summary.unique_customers|num }}</span><span class="l">Unique customers</span>{{ tag('set') }}</div>
+  <div class="kpi"><span class="v">{{ summary.unique_products|num }}</span><span class="l">Unique products</span>{{ tag('set') }}</div>
+  <div class="kpi"><span class="v">{{ summary.total_transactions|num }}</span><span class="l">Transactions (lines)</span>{{ tag('list of tuples') }}</div>
+  <div class="kpi"><span class="v">{{ summary.total_invoices|num }}</span><span class="l">Orders (invoices)</span>{{ tag('set') }}</div>
+  <div class="kpi"><span class="v">{{ summary.total_quantity|num }}</span><span class="l">Units purchased</span>{{ tag('sum over list') }}</div>
+  <div class="kpi"><span class="v">{{ summary.total_revenue|money }}</span><span class="l">Total revenue</span>{{ tag('dict comprehension') }}</div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Revenue by month</h2>{{ tag('dict[str, float]') }}</div>
+  <div class="bars" role="img" aria-label="Monthly revenue bar chart">
+    {% for month, value in months %}
+    <div class="bar" title="{{ month }}: {{ value|money }}">
+      <span class="fill" style="height: {{ (value / peak * 100)|round(1) }}%"></span>
+      <span class="m">{{ month[2:] }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="two">
+  <section class="panel">
+    <div class="panel-head"><h2>Top customers by spend</h2>{{ tag('dict + sorted()') }}</div>
+    <table>
+      <thead><tr><th>Customer</th><th>Country</th><th class="n">Orders</th><th class="n">Total</th></tr></thead>
+      <tbody>
+      {% for c in top_customers %}
+        <tr><td><a href="{{ url_for('customer_detail', cid=c.id) }}">{{ c.id }}</a></td><td>{{ c.country }}</td><td class="n">{{ c.orders }}</td><td class="n">{{ c.total|money }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Most frequently purchased products</h2>{{ tag('dict of dicts') }}</div>
+    <table>
+      <thead><tr><th>Product</th><th class="n">In orders</th><th class="n">Units</th></tr></thead>
+      <tbody>
+      {% for p in top_products %}
+        <tr><td><a href="{{ url_for('product_detail', code=p.code) }}">{{ p.description|title }}</a></td><td class="n">{{ p.frequency }}</td><td class="n">{{ p.quantity|num }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<div class="two">
+  <section class="panel">
+    <div class="panel-head"><h2>Leading countries</h2>{{ tag('dict of sets') }}</div>
+    <table>
+      <thead><tr><th>Country</th><th class="n">Customers</th><th class="n">Revenue</th></tr></thead>
+      <tbody>
+      {% for c in countries %}
+        <tr><td>{{ c.country }}</td><td class="n">{{ c.customers }}</td><td class="n">{{ c.revenue|money }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>What the cleaning step removed</h2>{{ tag('dict + str methods') }}</div>
+    <table>
+      <tbody>
+        <tr><td>Rows read from file</td><td class="n">{{ report.rows_read|num }}</td></tr>
+        <tr><td>No customer ID</td><td class="n">{{ report.no_customer|num }}</td></tr>
+        <tr><td>Cancelled invoices (start with C)</td><td class="n">{{ report.cancelled|num }}</td></tr>
+        <tr><td>Postage, fees and manual entries</td><td class="n">{{ report.non_product|num }}</td></tr>
+        <tr><td>Zero or negative quantity or price</td><td class="n">{{ report.bad_quantity_or_price|num }}</td></tr>
+        <tr><td><strong>Rows kept</strong></td><td class="n"><strong>{{ report.kept|num }}</strong></td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endblock %}

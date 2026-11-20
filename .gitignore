@@ -1,0 +1,21 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache & artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.pkl
+
+# Vercel
+.vercel/
+
+# Excel raw archive (CSV is used in production)
+data/online_retail.xlsx
+
+# OS generated files
+.DS_Store
+Thumbs.db

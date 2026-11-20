@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+<h1>That page does not exist</h1>
+<p class="lede">The customer or product ID may be mistyped. Use <a href="{{ url_for('customers') }}">customer search</a> or <a href="{{ url_for('products') }}">product search</a> to find it.</p>
+{% endblock %}

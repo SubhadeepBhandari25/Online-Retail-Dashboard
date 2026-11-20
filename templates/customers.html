@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Customers{% endblock %}
+{% block content %}
+<h1>Customer search</h1>
+<p class="lede">Search by customer ID or filter by country. Matches come from a list comprehension over the customer set.</p>
+
+<form class="filters" method="get">
+  <label>Customer ID<input type="search" name="q" value="{{ q }}" placeholder="e.g. 1285"></label>
+  <label>Country
+    <select name="country">
+      <option value="">All countries</option>
+      {% for c in countries %}<option value="{{ c }}" {% if c == country %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+  </label>
+  <button type="submit">Search customers</button>
+</form>
+
+<section class="panel">
+  <div class="panel-head"><h2>{{ total|num }} customers found{% if total > 100 %} (showing top 100 by spend){% endif %}</h2>{{ tag('list of dicts') }}</div>
+  {% if rows %}
+  <table>
+    <thead><tr><th>Customer</th><th>Country</th><th class="n">Orders</th><th class="n">Units</th><th class="n">Total spent</th></tr></thead>
+    <tbody>
+    {% for c in rows %}
+      <tr><td><a href="{{ url_for('customer_detail', cid=c.id) }}">{{ c.id }}</a></td><td>{{ c.country }}</td><td class="n">{{ c.orders }}</td><td class="n">{{ c.quantity|num }}</td><td class="n">{{ c.total|money }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">No customers match. Try a shorter ID or clear the country filter.</p>
+  {% endif %}
+</section>
+{% endblock %}

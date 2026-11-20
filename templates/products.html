@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<h1>Product search</h1>
+<p class="lede">Search by product code or any word in the description. Purchase frequency counts the distinct orders a product appeared in.</p>
+
+<form class="filters" method="get">
+  <label>Code or description<input type="search" name="q" value="{{ q }}" placeholder="e.g. lunch bag"></label>
+  <label>Sort by
+    <select name="sort">
+      {% for key, label in [('frequency','Purchase frequency'),('quantity','Units sold'),('revenue','Revenue'),('buyers','Number of buyers')] %}
+      <option value="{{ key }}" {% if key == sort %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Search products</button>
+</form>
+
+<section class="panel">
+  <div class="panel-head"><h2>{{ total|num }} products found{% if total > 100 %} (showing top 100){% endif %}</h2>{{ tag('dict of dicts -> list') }}</div>
+  {% if rows %}
+  <table>
+    <thead><tr><th>Code</th><th>Description</th><th class="n">In orders</th><th class="n">Units</th><th class="n">Buyers</th><th class="n">Revenue</th></tr></thead>
+    <tbody>
+    {% for p in rows %}
+      <tr><td>{{ p.code }}</td><td><a href="{{ url_for('product_detail', code=p.code) }}">{{ p.description|title }}</a></td><td class="n">{{ p.frequency }}</td><td class="n">{{ p.quantity|num }}</td><td class="n">{{ p.buyers }}</td><td class="n">{{ p.revenue|money }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">No products match. Try a single word, like "heart" or "bag".</p>
+  {% endif %}
+</section>
+{% endblock %}

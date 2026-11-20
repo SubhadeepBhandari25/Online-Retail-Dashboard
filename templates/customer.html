@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Customer {{ cid }}{% endblock %}
+{% block content %}
+<p class="crumb"><a href="{{ url_for('customers') }}">Customers</a></p>
+<h1>Customer {{ cid }}</h1>
+<p class="lede">{{ row.country }}</p>
+
+<section class="kpis three">
+  <div class="kpi"><span class="v">{{ row.total|money }}</span><span class="l">Total spent</span></div>
+  <div class="kpi"><span class="v">{{ row.orders }}</span><span class="l">Orders</span></div>
+  <div class="kpi"><span class="v">{{ row.quantity|num }}</span><span class="l">Units bought</span></div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Most bought items</h2>{{ tag('dict + sorted()') }}</div>
+  <table>
+    <thead><tr><th>Product</th><th class="n">Units</th></tr></thead>
+    <tbody>
+    {% for code, desc, qty in history.top_items %}
+      <tr><td><a href="{{ url_for('product_detail', code=code) }}">{{ desc|title }}</a></td><td class="n">{{ qty|num }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><h2>Purchase history</h2>{{ tag('dict -> dict -> list') }}</div>
+  {% for invoice, order in history.orders %}
+  <details {% if loop.first %}open{% endif %}>
+    <summary><strong>Invoice {{ invoice }}</strong> <span class="muted">{{ order.date.strftime('%d %b %Y, %H:%M') }}</span> <span class="sum">{{ order.total|money }}</span></summary>
+    <table>
+      <thead><tr><th>Product</th><th class="n">Qty</th><th class="n">Unit price</th><th class="n">Line total</th></tr></thead>
+      <tbody>
+      {% for t in order.lines %}
+        <tr><td><a href="{{ url_for('product_detail', code=t.stock_code) }}">{{ t.description|title }}</a></td><td class="n">{{ t.quantity }}</td><td class="n">{{ t.unit_price|money }}</td><td class="n">{{ (t.quantity * t.unit_price)|money }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Transactions{% endblock %}
+{% block content %}
+<h1>Transaction filter</h1>
+<p class="lede">Combine any of these filters. A single list comprehension with several conditions produces the result.</p>
+
+<form class="filters" method="get">
+  <label>Country
+    <select name="country">
+      <option value="">All countries</option>
+      {% for c in countries %}<option value="{{ c }}" {% if c == args.get('country') %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Invoice<input type="search" name="invoice" value="{{ args.get('invoice','') }}" placeholder="536365"></label>
+  <label>Product text<input type="search" name="text" value="{{ args.get('text','') }}" placeholder="heart"></label>
+  <label>Minimum quantity<input type="number" min="0" name="min_qty" value="{{ args.get('min_qty','') }}"></label>
+  <label>From<input type="date" name="date_from" value="{{ args.get('date_from','') }}"></label>
+  <label>To<input type="date" name="date_to" value="{{ args.get('date_to','') }}"></label>
+  <button type="submit">Apply filters</button>
+</form>
+
+<section class="panel">
+  <div class="panel-head"><h2>{{ total|num }} transactions worth {{ revenue|money }}</h2>{{ tag('list comprehension') }}</div>
+  {% if rows %}
+  <table>
+    <thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Product</th><th>Country</th><th class="n">Qty</th><th class="n">Unit price</th></tr></thead>
+    <tbody>
+    {% for t in rows %}
+      <tr><td>{{ t.invoice }}</td><td>{{ t.date.strftime('%d %b %Y') }}</td><td><a href="{{ url_for('customer_detail', cid=t.customer_id) }}">{{ t.customer_id }}</a></td><td><a href="{{ url_for('product_detail', code=t.stock_code) }}">{{ t.description|title }}</a></td><td>{{ t.country }}</td><td class="n">{{ t.quantity }}</td><td class="n">{{ t.unit_price|money }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="pager">
+    {% if page_no > 1 %}<a href="{{ url_for('transactions', page=page_no-1, **keep) }}">Previous</a>{% endif %}
+    <span>Page {{ page_no }} of {{ pages }}</span>
+    {% if page_no < pages %}<a href="{{ url_for('transactions', page=page_no+1, **keep) }}">Next</a>{% endif %}
+  </div>
+  {% else %}
+  <p class="empty">No transactions match these filters. Widen the date range or lower the minimum quantity.</p>
+  {% endif %}
+</section>
+{% endblock %}
